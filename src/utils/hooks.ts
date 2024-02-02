@@ -1,5 +1,11 @@
 import { debounce } from 'lodash';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { Id, toast } from 'react-toastify';
 
 export const useLoadingToast = () => {
@@ -55,7 +61,7 @@ export const useIsBreakpoint = (breakpoint: Breakpoints | number) => {
     setWidth(window.innerWidth);
   }, 150);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setWidth(window.innerWidth);
 
     window.addEventListener('resize', handleWindowSizeChange);
