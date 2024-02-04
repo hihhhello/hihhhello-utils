@@ -41,6 +41,51 @@ export const useLoadingToast = () => {
   );
 };
 
+export const createUseLoadingToast = (toastFn: typeof toast) => {
+  'use client';
+
+  const useLoadingToast = () => {
+    const showLoading = useCallback((message: string) => {
+      return toastFn.loading(message);
+    }, []);
+
+    const handleSuccess = useCallback(
+      ({ message, toastId }: { toastId: Id; message: string }) => {
+        toastFn.update(toastId, {
+          render: message,
+          type: 'success',
+          autoClose: 2500,
+          isLoading: false,
+        });
+      },
+      [],
+    );
+
+    const handleError = useCallback(
+      ({ message, toastId }: { toastId: Id; message: string }) => {
+        toastFn.update(toastId, {
+          render: message,
+          type: 'error',
+          autoClose: 2500,
+          isLoading: false,
+        });
+      },
+      [],
+    );
+
+    return useMemo(
+      () => ({
+        showLoading,
+        handleSuccess,
+        handleError,
+      }),
+      [handleError, handleSuccess, showLoading],
+    );
+  };
+
+  return useLoadingToast;
+};
+
 export enum Breakpoints {
   'SM' = 640,
   'MD' = 768,
