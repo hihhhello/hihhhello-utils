@@ -54,8 +54,6 @@ export function createUrlWithSearchParams(params: {
 
   const searchParamsString = compact(
     Object.entries(searchParams).map(([key, value]) => {
-      console.log('value');
-
       if (!value || isEmpty(value)) {
         return undefined;
       }
@@ -64,8 +62,6 @@ export function createUrlWithSearchParams(params: {
         const joinedSearchValue = value
           .map((v) => `${encodeURIComponent(key)}=${encodeURIComponent(v)}`)
           .join('&');
-
-        console.log(joinedSearchValue);
 
         return joinedSearchValue;
       }
