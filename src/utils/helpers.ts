@@ -1,4 +1,4 @@
-import { compact } from 'lodash';
+import { compact, isEmpty } from 'lodash';
 
 export const classNames = (...classes: (string | boolean)[]) => {
   return classes.filter(Boolean).join(' ');
@@ -42,7 +42,10 @@ export const formatUSDInteger = (value: number | undefined) => {
 
 export function createUrlWithSearchParams(params: {
   url: string;
-  searchParams?: Record<string, string | number | undefined>;
+  searchParams?: Record<
+    string,
+    string | number | undefined | string[] | number[]
+  >;
 }): string {
   const { url, searchParams } = params;
   if (!searchParams || Object.keys(searchParams).length === 0) {
@@ -50,11 +53,25 @@ export function createUrlWithSearchParams(params: {
   }
 
   const searchParamsString = compact(
-    Object.entries(searchParams).map(([key, value]) =>
-      value
-        ? `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
-        : undefined,
-    ),
+    Object.entries(searchParams).map(([key, value]) => {
+      console.log('value');
+
+      if (!value || isEmpty(value)) {
+        return undefined;
+      }
+
+      if (Array.isArray(value)) {
+        const joinedSearchValue = value
+          .map((v) => `${encodeURIComponent(key)}=${encodeURIComponent(v)}`)
+          .join('&');
+
+        console.log(joinedSearchValue);
+
+        return joinedSearchValue;
+      }
+
+      return `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
+    }),
   ).join('&');
 
   return `${url}?${searchParamsString}`;
